@@ -38,7 +38,6 @@ export default function SwipePage() {
   }, [currentIndex, items])
 
   const currentItem = items[currentIndex]
-  const seenIds = new Set(history.map((item) => item.id))
 
   const handleSwipeRight = () => {
     if (currentItem) {
@@ -55,17 +54,8 @@ export default function SwipePage() {
   }
 
   const moveToNext = () => {
-    const nextIndex = currentIndex + 1
-    setCurrentIndex(nextIndex)
+    setCurrentIndex(currentIndex + 1)
     setDragX(0)
-    
-    // Try to load more items when reaching end (only if more exist)
-    if (nextIndex >= items.length - 2) {
-      const newItems = getRandomFoods(10, Array.from(seenIds))
-      if (newItems.length > 0) {
-        setItems([...items, ...newItems])
-      }
-    }
   }
 
   const handleUndo = () => {
