@@ -3,16 +3,27 @@
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useSwipeStore } from '@/lib/store'
+import { useSwipeStore, FoodItem } from '@/lib/store'
 
 export default function ResultsPage() {
   const { liked, disliked } = useSwipeStore()
 
   const stats = useMemo(() => {
-    const totalVotes = liked.length + disliked.length
-    const likePercentage = totalVotes > 0 ? (liked.length / totalVotes) * 100 : 0
+    // Deduplicate liked and disliked items
+    const uniqueLiked = liked.reduce((acc, item) => {
+      if (!acc.some(i => i.id === item.id)) acc.push(item)
+      return acc
+    }, [] as FoodItem[])
 
-    const categoryLikes = liked.reduce(
+    const uniqueDisliked = disliked.reduce((acc, item) => {
+      if (!acc.some(i => i.id === item.id)) acc.push(item)
+      return acc
+    }, [] as FoodItem[])
+
+    const totalVotes = uniqueLiked.length + uniqueDisliked.length
+    const likePercentage = totalVotes > 0 ? (uniqueLiked.length / totalVotes) * 100 : 0
+
+    const categoryLikes = uniqueLiked.reduce(
       (acc, item) => {
         acc[item.category] = (acc[item.category] || 0) + 1
         return acc
@@ -28,6 +39,8 @@ export default function ResultsPage() {
       totalVotes,
       likePercentage,
       topCategories,
+      uniqueLiked,
+      uniqueDisliked,
     }
   }, [liked, disliked])
 
@@ -151,7 +164,7 @@ export default function ResultsPage() {
                   <div className="text-3xl font-bold text-primary mb-2">{count}</div>
                   <p className="text-lg font-medium text-foreground">{category}</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    {((count / liked.length) * 100).toFixed(0)}% of your likes
+                    {((count / stats.uniqueLiked.length) * 100).toFixed(0)}% of your likes
                   </p>
                 </motion.div>
               ))}
@@ -163,7 +176,7 @@ export default function ResultsPage() {
         <motion.div variants={itemVariants} className="mb-12">
           <h2 className="text-3xl font-bold mb-6">Foods You Liked</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {liked.map((item) => (
+            {stats.uniqueLiked.map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ scale: 1.05 }}
@@ -181,7 +194,7 @@ export default function ResultsPage() {
         <motion.div variants={itemVariants} className="mb-12">
           <h2 className="text-3xl font-bold mb-6">Foods You Passed</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {disliked.slice(0, 8).map((item) => (
+            {stats.uniqueDisliked.slice(0, 8).map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ scale: 1.05 }}
@@ -193,9 +206,9 @@ export default function ResultsPage() {
               </motion.div>
             ))}
           </div>
-          {disliked.length > 8 && (
+          {stats.uniqueDisliked.length > 8 && (
             <p className="text-center text-muted-foreground mt-4">
-              +{disliked.length - 8} more foods passed
+              +{stats.uniqueDisliked.length - 8} more foods passed
             </p>
           )}
         </motion.div>
