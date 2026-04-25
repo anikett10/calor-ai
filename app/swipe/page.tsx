@@ -55,11 +55,12 @@ export default function SwipePage() {
   }
 
   const moveToNext = () => {
-    if (currentIndex < items.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-      setDragX(0)
-    } else {
-      // Load more items when reaching the end (only if more are available)
+    const nextIndex = currentIndex + 1
+    setCurrentIndex(nextIndex)
+    setDragX(0)
+    
+    // Try to load more items when reaching end (only if more exist)
+    if (nextIndex >= items.length - 2) {
       const newItems = getRandomFoods(10, Array.from(seenIds))
       if (newItems.length > 0) {
         setItems([...items, ...newItems])
