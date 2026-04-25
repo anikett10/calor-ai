@@ -18,7 +18,7 @@ export default function SwipePage() {
   const { liked, disliked, addLiked, addDisliked, undo, history } = useSwipeStore()
 
   useEffect(() => {
-    setItems(getRandomFoods(20))
+    setItems(getRandomFoods(25))
   }, [])
 
   // Keyboard navigation
@@ -59,9 +59,11 @@ export default function SwipePage() {
       setCurrentIndex(currentIndex + 1)
       setDragX(0)
     } else {
-      // Load more items when reaching the end
+      // Load more items when reaching the end (only if more are available)
       const newItems = getRandomFoods(10, Array.from(seenIds))
-      setItems([...items, ...newItems])
+      if (newItems.length > 0) {
+        setItems([...items, ...newItems])
+      }
     }
   }
 
