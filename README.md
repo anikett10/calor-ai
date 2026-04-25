@@ -2,7 +2,7 @@
 
 A modern React web application that helps users discover their unique food preferences through an interactive Tinder-like swiping interface.
 
-**Live Demo:** [Deploy your live URL here]
+**Live Demo:** [https://calor-ai.vercel.app](https://calor-ai.vercel.app) (Replace with your actual URL after deployment)
 
 ## 📋 Overview
 

@@ -9,7 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'CalorAI',
   description: 'Discover your taste profile through swiping cuisines from around the world',
-  generator: 'v0.app',
+  generator: 'CalorAI Food Discovery App',
   viewport: {
     width: 'device-width',
     initialScale: 1,
