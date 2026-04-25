@@ -26,15 +26,21 @@ export const useSwipeStore = create<SwipeState>()(
       disliked: [],
       history: [],
       addLiked: (item: FoodItem) =>
-        set((state) => ({
-          liked: [...state.liked, item],
-          history: [...state.history, item],
-        })),
+        set((state) => {
+          if (state.liked.some((i) => i.id === item.id)) return state
+          return {
+            liked: [...state.liked, item],
+            history: [...state.history, item],
+          }
+        }),
       addDisliked: (item: FoodItem) =>
-        set((state) => ({
-          disliked: [...state.disliked, item],
-          history: [...state.history, item],
-        })),
+        set((state) => {
+          if (state.disliked.some((i) => i.id === item.id)) return state
+          return {
+            disliked: [...state.disliked, item],
+            history: [...state.history, item],
+          }
+        }),
       addToHistory: (item: FoodItem) =>
         set((state) => ({
           history: [...state.history, item],
